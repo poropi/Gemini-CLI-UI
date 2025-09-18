@@ -1,6 +1,10 @@
 <div align="center">
   <img src="public/logo.svg" alt="Gemini CLI UI" width="64" height="64">
   <h1>Gemini CLI UI</h1>
+  
+  <p><strong>🌟 これは日本語サポートを強化したオリジナルプロジェクトのフォーク版です</strong></p>
+  <p>リポジトリ: <a href="https://github.com/cruzyjapan/Gemini-CLI-UI">https://github.com/cruzyjapan/Gemini-CLI-UI</a></p>
+  <p><em>包括的な日本語入力最適化、IME変換保護機能、完全な日本語UIローカライゼーションを提供</em></p>
 </div>
 
 [Gemini CLI](https://github.com/google-gemini/gemini-cli) GoogleのAI支援コーディング用公式CLIのデスクトップ・モバイル対応UIです。ローカルまたはリモートで使用でき、Gemini CLIのアクティブなプロジェクトとセッションを表示し、CLIと同じように変更を加えることができます。どこでも動作する適切なインターフェースを提供します。
@@ -46,6 +50,7 @@
 - **セッション管理** - 会話の再開、複数セッションの管理、履歴の追跡
 - **モデル選択** - Gemini 2.5 Proを含む複数のGeminiモデルから選択可能
 - **YOLOモード** - 確認プロンプトをスキップして高速操作（注意して使用）
+- **🇯🇵 強化された日本語サポート** - 完全な日本語UIローカライゼーションと、日本語入力中の誤送信を防ぐIME変換保護機能
 
 ## クイックスタート
 
@@ -58,7 +63,7 @@
 
 1. **リポジトリをクローン：**
 ```bash
-git clone https://github.com/cruzyjapan/Gemini-CLI-UI.git
+git clone https://github.com/poropi/Gemini-CLI-UI.git
 cd Gemini-CLI-UI
 ```
 

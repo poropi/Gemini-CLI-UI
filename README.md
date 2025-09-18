@@ -1,6 +1,10 @@
 <div align="center">
   <img src="public/logo.svg" alt="Gemini CLI UI" width="64" height="64">
   <h1>Gemini CLI UI</h1>
+  
+  <p><strong>🌟 This is a fork of the original project with enhanced Japanese language support</strong></p>
+  <p>Repository: <a href="https://github.com/cruzyjapan/Gemini-CLI-UI">https://github.com/cruzyjapan/Gemini-CLI-UI</a></p>
+  <p><em>Features comprehensive Japanese input optimization, IME composition protection, and complete Japanese UI localization</em></p>
 </div>
 
 A desktop and mobile UI for [Gemini CLI](https://github.com/google-gemini/gemini-cli), Google's official CLI for AI-assisted coding. You can use it locally or remotely to view your active projects and sessions in Gemini CLI and make changes to them the same way you would do it in Gemini CLI. This gives you a proper interface that works everywhere.
@@ -46,6 +50,7 @@ A desktop and mobile UI for [Gemini CLI](https://github.com/google-gemini/gemini
 - **Session Management** - Resume conversations, manage multiple sessions, and track history
 - **Model Selection** - Choose from multiple Gemini models including Gemini 2.5 Pro
 - **YOLO Mode** - Skip confirmation prompts for faster operations (use with caution)
+- **🇯🇵 Enhanced Japanese Support** - Complete Japanese UI localization and IME composition protection to prevent accidental message sending during Japanese input
 
 ## Quick Start
 
@@ -58,7 +63,7 @@ A desktop and mobile UI for [Gemini CLI](https://github.com/google-gemini/gemini
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/cruzyjapan/Gemini-CLI-UI.git
+git clone https://github.com/poropi/Gemini-CLI-UI.git
 cd Gemini-CLI-UI
 ```
 

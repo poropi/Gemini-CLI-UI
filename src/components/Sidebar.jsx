@@ -277,7 +277,7 @@ function Sidebar({
   };
 
   const deleteSession = async (projectName, sessionId) => {
-    if (!confirm('Are you sure you want to delete this session? This action cannot be undone.')) {
+    if (!confirm('このセッションを削除してもよろしいですか？この操作は元に戻せません。')) {
       return;
     }
 
@@ -291,16 +291,16 @@ function Sidebar({
         }
       } else {
         console.error('Failed to delete session');
-        alert('Failed to delete session. Please try again.');
+        alert('セッションの削除に失敗しました。もう一度お試しください。');
       }
     } catch (error) {
       console.error('Error deleting session:', error);
-      alert('Error deleting session. Please try again.');
+      alert('セッション削除中にエラーが発生しました。もう一度お試しください。');
     }
   };
 
   const deleteProject = async (projectName) => {
-    if (!confirm('Are you sure you want to delete this empty project? This action cannot be undone.')) {
+    if (!confirm('この空のプロジェクトを削除してもよろしいですか？この操作は元に戻せません。')) {
       return;
     }
 
@@ -315,11 +315,11 @@ function Sidebar({
       } else {
         const error = await response.json();
         console.error('Failed to delete project');
-        alert(error.error || 'Failed to delete project. Please try again.');
+        alert(error.error || 'プロジェクトの削除に失敗しました。もう一度お試しください。');
       }
     } catch (error) {
       console.error('Error deleting project:', error);
-      alert('Error deleting project. Please try again.');
+      alert('プロジェクト削除中にエラーが発生しました。もう一度お試しください。');
     }
   };
 
@@ -438,7 +438,7 @@ function Sidebar({
                 }
               }}
               disabled={isRefreshing}
-              title="Refresh projects and sessions (Ctrl+R)"
+              title="プロジェクトとセッションを更新 (Ctrl+R)"
             >
               <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''} group-hover:rotate-180 transition-transform duration-300`} />
             </Button>
@@ -447,7 +447,7 @@ function Sidebar({
               size="sm"
               className="h-9 w-9 px-0 bg-primary hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md"
               onClick={() => setShowNewProject(true)}
-              title="Create new project (Ctrl+N)"
+              title="新しいプロジェクトを作成 (Ctrl+N)"
             >
               <FolderPlus className="w-4 h-4" />
             </Button>
@@ -614,7 +614,7 @@ function Sidebar({
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Search projects..."
+              placeholder="プロジェクトを検索..."
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
               className="pl-9 h-9 text-sm bg-muted/50 border-0 focus:bg-background focus:ring-1 focus:ring-primary/20"
@@ -649,9 +649,9 @@ function Sidebar({
               <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center mx-auto mb-4 md:mb-3">
                 <Folder className="w-6 h-6 text-muted-foreground" />
               </div>
-              <h3 className="text-base font-medium text-foreground mb-2 md:mb-1">No projects found</h3>
+              <h3 className="text-base font-medium text-foreground mb-2 md:mb-1">プロジェクトが見つかりません</h3>
               <p className="text-sm text-muted-foreground">
-                Run Gemini CLI in a project directory to get started
+                プロジェクトディレクトリでGemini CLIを実行して開始してください
               </p>
             </div>
           ) : filteredProjects.length === 0 ? (
@@ -659,9 +659,9 @@ function Sidebar({
               <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center mx-auto mb-4 md:mb-3">
                 <Search className="w-6 h-6 text-muted-foreground" />
               </div>
-              <h3 className="text-base font-medium text-foreground mb-2 md:mb-1">No matching projects</h3>
+              <h3 className="text-base font-medium text-foreground mb-2 md:mb-1">該当するプロジェクトがありません</h3>
               <p className="text-sm text-muted-foreground">
-                Try adjusting your search term
+                検索条件を調整してみてください
               </p>
             </div>
           ) : (
@@ -775,7 +775,7 @@ function Sidebar({
                                     toggleStarProject(project.name);
                                   }}
                                   onTouchEnd={handleTouchClick(() => toggleStarProject(project.name))}
-                                  title={isStarred ? "Remove from favorites" : "Add to favorites"}
+                                  title={isStarred ? "お気に入りから削除" : "お気に入りに追加"}
                                 >
                                   <Star className={cn(
                                     "w-4 h-4 transition-colors",
@@ -1031,7 +1031,7 @@ function Sidebar({
                                   </div>
                                   <div className="min-w-0 flex-1">
                                     <div className="text-xs font-medium truncate text-foreground">
-                                      {session.summary || 'New Session'}
+                                      {session.summary || '新しいセッション'}
                                     </div>
                                     <div className="flex items-center gap-1 mt-0.5">
                                       <Clock className="w-2.5 h-2.5 text-muted-foreground" />
@@ -1075,7 +1075,7 @@ function Sidebar({
                                   <MessageSquare className="w-3 h-3 text-muted-foreground mt-0.5 flex-shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <div className="text-xs font-medium truncate text-foreground">
-                                      {session.summary || 'New Session'}
+                                      {session.summary || '新しいセッション'}
                                     </div>
                                     <div className="flex items-center gap-1 mt-0.5">
                                       <Clock className="w-2.5 h-2.5 text-muted-foreground" />
@@ -1158,7 +1158,7 @@ function Sidebar({
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         setEditingSession(session.id);
-                                        setEditingSessionName(session.summary || 'New Session');
+                                        setEditingSessionName(session.summary || '新しいセッション');
                                       }}
                                       title="Manually edit session name"
                                     >

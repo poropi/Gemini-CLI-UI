@@ -1067,6 +1067,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
   const [slashPosition, setSlashPosition] = useState(-1);
   const [visibleMessageCount, setVisibleMessageCount] = useState(100);
   const [geminiStatus, setGeminiStatus] = useState(null);
+  const [isComposing, setIsComposing] = useState(false); // Track IME composition state
 
 
   // Memoized diff calculation to prevent recalculating on every render
@@ -1947,7 +1948,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
         });
         
         if (!response.ok) {
-          throw new Error('Failed to upload images');
+          throw new Error('画像のアップロードに失敗しました');
         }
         
         const result = await response.json();
@@ -1956,7 +1957,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
         // console.error('Image upload failed:', error);
         setChatMessages(prev => [...prev, {
           type: 'error',
-          content: `Failed to upload images: ${error.message}`,
+          content: `画像のアップロードに失敗しました: ${error.message}`,
           timestamp: new Date()
         }]);
         return;
@@ -2104,6 +2105,11 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
     
     // Handle Enter key: Ctrl+Enter (Cmd+Enter on Mac) sends, Shift+Enter creates new line
     if (e.key === 'Enter') {
+      // Prevent message sending during IME composition (Japanese input)
+      if (e.isComposing || e.keyCode === 229 || isComposing) {
+        return; // Allow default IME behavior
+      }
+      
       if ((e.ctrlKey || e.metaKey) && !e.shiftKey) {
         // Ctrl+Enter or Cmd+Enter: Send message
         e.preventDefault();
@@ -2166,6 +2172,15 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
     }
   };
 
+  // IME composition event handlers for better Japanese input support
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+
+  const handleCompositionEnd = () => {
+    setIsComposing(false);
+  };
+
   const handleTextareaClick = (e) => {
     setCursorPosition(e.target.selectionStart);
   };
@@ -2201,7 +2216,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center text-gray-500 dark:text-gray-400">
-          <p>Select a project to start chatting with Gemini</p>
+          <p>Geminiとチャットを始めるためにプロジェクトを選択してください</p>
         </div>
       </div>
     );
@@ -2232,15 +2247,15 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
           <div className="text-center text-gray-500 dark:text-gray-400 mt-8">
             <div className="flex items-center justify-center space-x-2">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
-              <p>Loading session messages...</p>
+              <p>セッションメッセージを読み込み中...</p>
             </div>
           </div>
         ) : chatMessages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center text-gray-500 dark:text-gray-400 px-6 sm:px-4">
-              <p className="font-bold text-lg sm:text-xl mb-3">Start a conversation with Gemini</p>
+              <p className="font-bold text-lg sm:text-xl mb-3">Geminiとの会話を始めましょう</p>
               <p className="text-sm sm:text-base leading-relaxed">
-                Ask questions about your code, request changes, or get help with development tasks
+                コードについて質問したり、変更を依頼したり、開発タスクのサポートを受けることができます
               </p>
             </div>
           </div>
@@ -2248,12 +2263,12 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
           <>
             {chatMessages.length > visibleMessageCount && (
               <div className="text-center text-gray-500 dark:text-gray-400 text-sm py-2 border-b border-gray-200 dark:border-gray-700">
-                Showing last {visibleMessageCount} messages ({chatMessages.length} total) • 
+                最新の{visibleMessageCount}件のメッセージを表示中（全{chatMessages.length}件）• 
                 <button 
                   className="ml-1 text-blue-600 hover:text-blue-700 underline"
                   onClick={loadEarlierMessages}
                 >
-                  Load earlier messages
+                  以前のメッセージを読み込む
                 </button>
               </div>
             )}
@@ -2293,7 +2308,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
                   <div className="animate-pulse">●</div>
                   <div className="animate-pulse" style={{ animationDelay: '0.2s' }}>●</div>
                   <div className="animate-pulse" style={{ animationDelay: '0.4s' }}>●</div>
-                  <span className="ml-2">Thinking...</span>
+                  <span className="ml-2">考え中...</span>
                 </div>
               </div>
             </div>
@@ -2335,7 +2350,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
               <button
                 onClick={scrollToBottom}
                 className="w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:ring-offset-gray-800"
-                title="Scroll to bottom"
+                title="下までスクロール"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
@@ -2353,7 +2368,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
                 <svg className="w-8 h-8 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
-                <p className="text-sm font-medium">Drop images here</p>
+                <p className="text-sm font-medium">画像をここにドロップ</p>
               </div>
             </div>
           )}
@@ -2417,6 +2432,8 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
               onClick={handleTextareaClick}
               onKeyDown={handleKeyDown}
               onPaste={handlePaste}
+              onCompositionStart={handleCompositionStart}
+              onCompositionEnd={handleCompositionEnd}
               onFocus={() => setIsInputFocused(true)}
               onBlur={() => setIsInputFocused(false)}
               onInput={(e) => {
@@ -2430,7 +2447,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
                 const isExpanded = e.target.scrollHeight > lineHeight * 2;
                 setIsTextareaExpanded(isExpanded);
               }}
-              placeholder="Ask Gemini to help with your code... (@ to reference files)"
+              placeholder="コードについて質問したり、変更を依頼してください... (@でファイル参照)"
               disabled={isLoading}
               rows={1}
               className="chat-input-placeholder w-full pl-12 pr-28 sm:pr-40 py-3 sm:py-4 bg-transparent rounded-2xl focus:outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 disabled:opacity-50 resize-none min-h-[40px] sm:min-h-[56px] max-h-[40vh] sm:max-h-[300px] overflow-y-auto text-sm sm:text-base transition-all duration-200"
@@ -2461,7 +2478,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
                   setIsTextareaExpanded(false);
                 }}
                 className="absolute -left-0.5 -top-3 sm:right-28 sm:left-auto sm:top-1/2 sm:-translate-y-1/2 w-6 h-6 sm:w-8 sm:h-8 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center transition-all duration-200 group z-10 shadow-sm"
-                title="Clear input"
+                title="入力をクリア"
               >
                 <svg 
                   className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-100 transition-colors" 
@@ -2483,7 +2500,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
               type="button"
               onClick={open}
               className="absolute left-2 bottom-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-              title="Attach images"
+              title="画像を添付"
             >
               <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -2528,12 +2545,12 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
           </div>
           {/* Hint text */}
           <div className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2 hidden sm:block">
-            Press Enter to send • Shift+Enter for new line • Tab to change modes • @ to reference files
+            Enterで送信 • Shift+Enterで改行 • Tabでモード変更 • @でファイル参照
           </div>
           <div className={`text-xs text-gray-500 dark:text-gray-400 text-center mt-2 sm:hidden transition-opacity duration-200 ${
             isInputFocused ? 'opacity-100' : 'opacity-0'
           }`}>
-            Enter to send • Tab for modes • @ for files
+            Enter送信 • Tabモード • @ファイル
           </div>
         </form>
       </div>
